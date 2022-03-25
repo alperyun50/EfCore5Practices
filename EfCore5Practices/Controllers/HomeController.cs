@@ -1,4 +1,4 @@
-﻿using EfCore5Practices.Models;
+﻿using EfModel.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

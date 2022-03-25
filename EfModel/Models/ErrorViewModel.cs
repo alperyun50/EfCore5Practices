@@ -1,6 +1,6 @@
 using System;
 
-namespace EfCore5Practices.Models
+namespace EfModel.Models
 {
     public class ErrorViewModel
     {
