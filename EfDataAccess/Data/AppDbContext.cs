@@ -25,5 +25,17 @@ namespace EfDataAccess.Data
         public DbSet<Author> Authors { get; set; }
 
         public DbSet<Publisher> Publishers { get; set; }
+
+        public DbSet<BookAuthor> BookAuthors { get; set; }
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // we configure fluent api
+            // add a compozit(combine) fkey for book author many to many relation
+            modelBuilder.Entity<BookAuthor>().HasKey(a => new { a.Author_Id, a.Book_Id });
+
+        }
     }
 }

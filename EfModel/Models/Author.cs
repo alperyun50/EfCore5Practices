@@ -30,5 +30,8 @@ namespace EfModel.Models
                 return $"{FirstName} {Lastname}";
             }
         }
+
+
+        public ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }
