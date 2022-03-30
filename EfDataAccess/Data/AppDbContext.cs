@@ -29,6 +29,9 @@ namespace EfDataAccess.Data
         public DbSet<BookAuthor> BookAuthors { get; set; }
 
 
+        public DbSet<Fluent_BookDetail> Fluent_BookDetails { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +39,12 @@ namespace EfDataAccess.Data
             // add a compozit(combine) fkey for book author many to many relation
             modelBuilder.Entity<BookAuthor>().HasKey(a => new { a.Author_Id, a.Book_Id });
 
+
+            // BookDetails
+            //declare primary key
+            modelBuilder.Entity<Fluent_BookDetail>().HasKey(b => b.BookDetail_Id);
+            //add required
+            modelBuilder.Entity<Fluent_BookDetail>().Property(x => x.NumberOfChapters).IsRequired();
         }
     }
 }
