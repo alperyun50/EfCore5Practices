@@ -18,5 +18,15 @@ namespace EfModel.Models
 
         public double Price { get; set; }
 
+        public int BookDetail_Id { get; set; }
+
+        public Fluent_BookDetail Fluent_BookDetail { get; set; }
+
+        public int Publisher_Id { get; set; }
+
+        public Fluent_Publisher Fluent_Publisher { get; set; }
+
+        public ICollection<Fluent_BookAuthor> Fluent_BookAuthors { get; set; }
+
     }
 }

@@ -16,5 +16,7 @@ namespace EfModel.Models
 
         public string Location { get; set; }
 
+        public List<Fluent_Book> Fluent_Books { get; set; }
+
     }
 }

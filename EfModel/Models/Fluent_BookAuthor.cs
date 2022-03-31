@@ -8,12 +8,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EfModel.Models
 {
-    // this class added for create many to many relation between book and Author tables
+    // this class added for create many to many relation between Book and Author tables
     public class Fluent_BookAuthor
     {
         public int Book_Id { get; set; }
 
         public int Author_Id { get; set; }
 
+        public Fluent_Book Fluent_Book { get; set; }
+
+        public Fluent_Author Fluent_Author { get; set; }
     }
 }

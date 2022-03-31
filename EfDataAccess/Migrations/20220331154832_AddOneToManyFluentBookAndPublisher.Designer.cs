@@ -4,14 +4,16 @@ using EfDataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EfDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220331154832_AddOneToManyFluentBookAndPublisher")]
+    partial class AddOneToManyFluentBookAndPublisher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,21 +195,6 @@ namespace EfDataAccess.Migrations
                     b.ToTable("Fluent_Books");
                 });
 
-            modelBuilder.Entity("EfModel.Models.Fluent_BookAuthor", b =>
-                {
-                    b.Property<int>("Author_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Author_Id", "Book_Id");
-
-                    b.HasIndex("Book_Id");
-
-                    b.ToTable("Fluent_BookAuthor");
-                });
-
             modelBuilder.Entity("EfModel.Models.Fluent_BookDetail", b =>
                 {
                     b.Property<int>("BookDetail_Id")
@@ -342,25 +329,6 @@ namespace EfDataAccess.Migrations
                     b.Navigation("Fluent_Publisher");
                 });
 
-            modelBuilder.Entity("EfModel.Models.Fluent_BookAuthor", b =>
-                {
-                    b.HasOne("EfModel.Models.Fluent_Author", "Fluent_Author")
-                        .WithMany("Fluent_BookAuthors")
-                        .HasForeignKey("Author_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EfModel.Models.Fluent_Book", "Fluent_Book")
-                        .WithMany("Fluent_BookAuthors")
-                        .HasForeignKey("Book_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fluent_Author");
-
-                    b.Navigation("Fluent_Book");
-                });
-
             modelBuilder.Entity("EfModel.Models.Author", b =>
                 {
                     b.Navigation("BookAuthors");
@@ -374,16 +342,6 @@ namespace EfDataAccess.Migrations
             modelBuilder.Entity("EfModel.Models.BookDetail", b =>
                 {
                     b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("EfModel.Models.Fluent_Author", b =>
-                {
-                    b.Navigation("Fluent_BookAuthors");
-                });
-
-            modelBuilder.Entity("EfModel.Models.Fluent_Book", b =>
-                {
-                    b.Navigation("Fluent_BookAuthors");
                 });
 
             modelBuilder.Entity("EfModel.Models.Fluent_BookDetail", b =>
