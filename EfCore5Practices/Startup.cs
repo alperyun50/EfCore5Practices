@@ -27,6 +27,8 @@ namespace EfCore5Practices
         {
             services.AddControllersWithViews();
 
+            services.AddMvc();
+
             // added for ef core db connection
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EfConnectionString")));
         }

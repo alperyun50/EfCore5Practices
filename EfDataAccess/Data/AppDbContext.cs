@@ -107,6 +107,8 @@ namespace EfDataAccess.Data
             //modelBuilder.ApplyConfiguration(new FluentPublisherConfig());
             //modelBuilder.ApplyConfiguration(new FluentAuthorConfig());
 
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         }
     }
 }
