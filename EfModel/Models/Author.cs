@@ -17,7 +17,7 @@ namespace EfModel.Models
         public string FirstName { get; set; }
 
         [Required]
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
 
@@ -27,7 +27,7 @@ namespace EfModel.Models
         public string FullName {
             get
             {
-                return $"{FirstName} {Lastname}";
+                return $"{FirstName} {LastName}";
             }
         }
 
