@@ -28,7 +28,7 @@ namespace EfModel.Models
 
         // [ForeignKey("referance table name")]
         [ForeignKey("BookDetail")]
-        public int BookDetail_Id { get; set; }
+        public int? BookDetail_Id { get; set; }
 
         public BookDetail BookDetail { get; set; }
 

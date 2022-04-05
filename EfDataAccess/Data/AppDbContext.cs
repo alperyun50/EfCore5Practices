@@ -29,6 +29,8 @@ namespace EfDataAccess.Data
 
         public DbSet<BookAuthor> BookAuthors { get; set; }
 
+        public DbSet<BookDetail> BookDetails { get; set; }
+
 
         public DbSet<Fluent_BookDetail> Fluent_BookDetails { get; set; }
 
