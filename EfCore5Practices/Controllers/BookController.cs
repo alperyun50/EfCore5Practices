@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace EfCore5Practices.Controllers
 {
@@ -22,16 +23,20 @@ namespace EfCore5Practices.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            // collect all category table items
-            List<Book> objList = _dbObject.Books.ToList();
-            foreach(var obj in objList)
-            {
-                // less efficient way to load all publishers
-                //obj.Publisher = _dbObject.Publishers.FirstOrDefault(u => u.Publisher_Id == obj.Publisher_Id);
+            // (eager loading) in more efficient way to load 
+            List<Book> objList = _dbObject.Books.Include(u => u.Publisher).ToList();
+
+            //// collect all category table items
+            //List<Book> objList = _dbObject.Books.ToList();
+            //foreach(var obj in objList)
+            //{
+            //    // less efficient way to load all publishers
+            //    //obj.Publisher = _dbObject.Publishers.FirstOrDefault(u => u.Publisher_Id == obj.Publisher_Id);
                 
-                // (explicit loading) that will load all publishers in more efficient way
-                _dbObject.Entry(obj).Reference(u => u.Publisher).Load();
-            }
+            //    // (explicit loading) that will load all publishers in more efficient way
+            //    _dbObject.Entry(obj).Reference(u => u.Publisher).Load();
+            //}
+
             return View(objList);
         }
 
@@ -97,9 +102,9 @@ namespace EfCore5Practices.Controllers
             }
 
             // for edit
-            obj.Book = _dbObject.Books.FirstOrDefault(u => u.Book_Id == id);
+            obj.Book = _dbObject.Books.Include(x => x.BookDetail).FirstOrDefault(u => u.Book_Id == id);
             // load bookdetails
-            obj.Book.BookDetail = _dbObject.BookDetails.FirstOrDefault(u => u.BookDetail_Id == obj.Book.BookDetail_Id);
+            //obj.Book.BookDetail = _dbObject.BookDetails.FirstOrDefault(u => u.BookDetail_Id == obj.Book.BookDetail_Id);
 
             if (obj == null)
             {
@@ -143,6 +148,65 @@ namespace EfCore5Practices.Controllers
             var objFromDb = _dbObject.Books.FirstOrDefault(x => x.Book_Id == id);
 
             _dbObject.Books.Remove(objFromDb);
+            _dbObject.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        public IActionResult PlayGround()
+        {
+            var bookTemp = _dbObject.Books.FirstOrDefault();
+            bookTemp.Price = 100;
+
+            var bookCollection = _dbObject.Books;
+            double totalPrice = 0;
+
+            foreach (var book in bookCollection)
+            {
+                totalPrice += book.Price;
+            }
+
+            var bookList = _dbObject.Books.ToList();
+            foreach (var book in bookList)
+            {
+                totalPrice += book.Price;
+            }
+
+            var bookCollection2 = _dbObject.Books;
+            var bookCount1 = bookCollection2.Count();
+
+            var bookCount2 = _dbObject.Books.Count();
+
+            // returns all the records
+            IEnumerable<Book> BookList1 = _dbObject.Books;
+            // then filter is applied in memory
+            var filteredBook1 = BookList1.Where(x => x.Price > 500).ToList();
+
+            // returns filtered records (more efficiently)
+            IQueryable<Book> BookList2 = _dbObject.Books;
+            var filteredBook2 = BookList2.Where(x => x.Price > 500).ToList();
+
+            //// if you want to change entity state manually
+            //var category = _dbObject.Categories.FirstOrDefault();
+            //_dbObject.Entry(category).State = EntityState.Modified;
+
+            //_dbObject.SaveChanges();
+
+
+            // updating related data
+            var bookTemp1 = _dbObject.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 4);
+            bookTemp1.BookDetail.NumberOfChapters = 222;
+
+            _dbObject.Books.Update(bookTemp1);
+            _dbObject.SaveChanges();
+
+
+            // attaching related data (more efficient way for partial update)
+            var bookTemp2 = _dbObject.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 4);
+            bookTemp2.BookDetail.Weight = 3333;
+
+            _dbObject.Books.Attach(bookTemp2);
             _dbObject.SaveChanges();
 
             return RedirectToAction(nameof(Index));
