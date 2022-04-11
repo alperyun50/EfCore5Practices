@@ -154,6 +154,35 @@ namespace EfCore5Practices.Controllers
         }
 
 
+        public IActionResult ManageAuthors(int id) 
+        {
+            BookAuthorVM obj = new BookAuthorVM
+            {
+                BookAuthorList = _dbObject.BookAuthors.Include(u => u.Author).Include(u => u.Book).Where(u => u.Book_Id == id).ToList(),
+               
+                BookAuthor = new BookAuthor()
+                {
+                    Book_Id = id
+                },
+
+                Book = _dbObject.Books.FirstOrDefault(u => u.Book_Id == id)
+            };
+
+            List<int> tempListOfAssignedAuthors = obj.BookAuthorList.Select(u => u.Author_Id).ToList();
+            // Not in clause in Linq
+            // get all the authors whos id is not in templistofassignedauthors
+            var tempList = _dbObject.Authors.Where(u => !tempListOfAssignedAuthors.Contains(u.Author_Id)).ToList();
+
+            obj.AuthorList = tempList.Select(i => new SelectListItem
+            {
+                Text = i.FullName,
+                Value = i.Author_Id.ToString()
+            });
+
+            return View(obj);
+        }
+
+
         public IActionResult PlayGround()
         {
             var bookTemp = _dbObject.Books.FirstOrDefault();
