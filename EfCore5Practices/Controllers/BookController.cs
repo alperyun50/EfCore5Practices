@@ -153,7 +153,7 @@ namespace EfCore5Practices.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        // many to many
         public IActionResult ManageAuthors(int id) 
         {
             BookAuthorVM obj = new BookAuthorVM
@@ -180,6 +180,32 @@ namespace EfCore5Practices.Controllers
             });
 
             return View(obj);
+        }
+
+
+        [HttpPost]
+        public IActionResult ManageAuthors(BookAuthorVM bookAuthorVM) 
+        {
+            if(bookAuthorVM.BookAuthor.Book_Id != 0 && bookAuthorVM.BookAuthor.Author_Id != 0)
+            {
+                _dbObject.BookAuthors.Add(bookAuthorVM.BookAuthor);
+                _dbObject.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(ManageAuthors), new { @id = bookAuthorVM.BookAuthor.Book_Id });
+        }
+
+
+        [HttpDelete]
+        public IActionResult RemoveAuthors(int authorId, BookAuthorVM bookAuthorVM)
+        {
+            int bookId = bookAuthorVM.Book.Book_Id;
+            BookAuthor bookAuthor = _dbObject.BookAuthors.FirstOrDefault(u => u.Author_Id == authorId && u.Book_Id == bookId);
+
+            _dbObject.BookAuthors.Remove(bookAuthor);
+            _dbObject.SaveChanges();
+
+            return RedirectToAction(nameof(ManageAuthors), new { @id = bookId });
         }
 
 
