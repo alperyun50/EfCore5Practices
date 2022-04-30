@@ -24,17 +24,23 @@ namespace EfCore5Practices.Controllers
         public IActionResult Index()
         {
             // (eager loading) in more efficient way to load 
-            List<Book> objList = _dbObject.Books.Include(u => u.Publisher).ToList();
-
+            List<Book> objList = _dbObject.Books.Include(u => u.Publisher).Include(u => u.BookAuthors).ThenInclude(u => u.Author).ToList();
+            
             //// collect all category table items
             //List<Book> objList = _dbObject.Books.ToList();
-            //foreach(var obj in objList)
+            //foreach (var obj in objList)
             //{
             //    // less efficient way to load all publishers
             //    //obj.Publisher = _dbObject.Publishers.FirstOrDefault(u => u.Publisher_Id == obj.Publisher_Id);
-                
+
             //    // (explicit loading) that will load all publishers in more efficient way
             //    _dbObject.Entry(obj).Reference(u => u.Publisher).Load();
+            //    _dbObject.Entry(obj).Collection(u => u.BookAuthors).Load();
+
+            //    foreach(var bookAuth in obj.BookAuthors)
+            //    {
+            //        _dbObject.Entry(bookAuth).Reference(u => u.Author).Load();
+            //    }
             //}
 
             return View(objList);
@@ -183,6 +189,7 @@ namespace EfCore5Practices.Controllers
         }
 
 
+        // many to many operation
         [HttpPost]
         public IActionResult ManageAuthors(BookAuthorVM bookAuthorVM) 
         {
@@ -196,6 +203,7 @@ namespace EfCore5Practices.Controllers
         }
 
 
+        // many to many operation
         [HttpDelete]
         public IActionResult RemoveAuthors(int authorId, BookAuthorVM bookAuthorVM)
         {
@@ -263,6 +271,27 @@ namespace EfCore5Practices.Controllers
 
             _dbObject.Books.Attach(bookTemp2);
             _dbObject.SaveChanges();
+
+
+            // Views example
+            var viewList = _dbObject.BookDetailsFromViews.ToList();
+            var viewList1 = _dbObject.BookDetailsFromViews.FirstOrDefault();
+            var viewList2 = _dbObject.BookDetailsFromViews.Where(u => u.Price > 500);
+
+
+            // Raw Sql example
+            var bookRaw = _dbObject.Books.FromSqlRaw("Select * from dbo.books").ToList();
+            // if you have to use parameter(for security issues exp. sql injection)
+            int id = 2;
+            var bookTemp3 = _dbObject.Books.FromSqlInterpolated($"Select * from dbo.books Where Book_Id = {id}").ToList();
+
+            // for stored procedures
+            var booksSproc = _dbObject.Books.FromSqlInterpolated($"EXEC dbo.getAllBookDetails {id}").ToList();
+
+
+            // .Net 5 only (if BookAuthors is a ICollection)
+            var bookFilter1 = _dbObject.Books.Include(e => e.BookAuthors.Where(p => p.Author_Id == 1)).ToList();
+
 
             return RedirectToAction(nameof(Index));
         }

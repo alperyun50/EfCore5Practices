@@ -41,6 +41,9 @@ namespace EfDataAccess.Data
         public DbSet<Fluent_Publisher> Fluent_Publishers { get; set; }
 
 
+        public DbSet<BookDetailsFromView> BookDetailsFromViews { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,6 +113,11 @@ namespace EfDataAccess.Data
             //modelBuilder.ApplyConfiguration(new FluentAuthorConfig());
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            // BookDetailsFromView has not primary key
+            // you can use this view read-only, because it hasnt have primary key
+            modelBuilder.Entity<BookDetailsFromView>().HasNoKey().ToView("GetOnlyBookDetails");
 
         }
     }
